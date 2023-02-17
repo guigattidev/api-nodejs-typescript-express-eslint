@@ -1,14 +1,19 @@
-import express from "express";
+import express, { Request } from "express";
+import cors from "cors";
 import * as dotenv from "dotenv";
+
+import { userRouter } from "./modules/user/userRouter.js";
 
 dotenv.config();
 
-const server = express();
+const app = express();
+const PORT = process.env.APP_PORT || 8080;
 
-server.get("/", (req, res) => {
-    res.send("Hello world");
-});
+app.use(cors());
+app.use(express.json());
 
-server.listen(process.env.APP_PORT, () => {
-    console.log("Server listening on port " + process.env.APP_PORT);
+app.use("/api/users", userRouter);
+
+app.listen(PORT, () => {
+    console.log("Server listening on port " + PORT);
 });
