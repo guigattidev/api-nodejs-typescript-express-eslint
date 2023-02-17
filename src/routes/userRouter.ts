@@ -5,11 +5,13 @@ import {
     userCreate,
     userShow,
     userDelete,
-} from "./userController.js";
+} from "../controllers/userController.js";
 
-export const userRouter = Router();
+const userRouter = Router();
 
 userRouter.get("/", userIndex);
 userRouter.post("/", userCreate);
 userRouter.get("/:user_id", userShow);
 userRouter.delete("/:user_id", userDelete);
+
+export default userRouter;

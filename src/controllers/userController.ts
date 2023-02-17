@@ -1,13 +1,8 @@
 import { Request, Response } from "express";
 import { randomUUID } from "crypto";
 
-interface IUser {
-    id: string;
-    name: string;
-    email: string;
-}
-
-const usersMemory: IUser[] = [];
+import { IUser } from "../helpers/userInterface.js";
+import { usersMemory } from "../models/userModel.js";
 
 export const userIndex = async (req: Request, res: Response) => {
     res.json(usersMemory);
