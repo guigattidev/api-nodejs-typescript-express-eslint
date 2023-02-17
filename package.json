@@ -1,0 +1,8 @@
+{
+  "name": "api-nodejs-typescript-express-eslint",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/guigattidev/api-nodejs-typescript-express-eslint.git",
+  "author": "guigattidev <gattiwhoomps@hotmail.com>",
+  "license": "MIT"
+}
