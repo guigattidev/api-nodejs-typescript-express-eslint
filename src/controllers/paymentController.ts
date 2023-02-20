@@ -2,16 +2,19 @@ import { Request, Response } from "express";
 
 import { schema } from "../helpers/schemaValidation.js";
 import { IEvent } from "../helpers/paymentInterface.js";
-import { getTotalBalance, checkAccountExists } from "../helpers/utils.js";
+import PaymentService from "../services/paymentService.js";
 import { paymentsData } from "../models/paymentModel.js";
 
 export const paymentReset = async (req: Request, res: Response) => {
     try {
+        // Instance of the class
+        const paymentService = new PaymentService();
+
         // Clean the database
-        paymentsData.length = 0;
+        paymentService.CleanDataBase();
 
         // Show the status and message
-        res.status(200).send("OK");
+        res.status(200).json("OK");
     } catch (err) {
         res.status(404).send(err);
     }
@@ -24,11 +27,18 @@ export const paymentBalance = async (req: Request, res: Response) => {
     let totalBalance: Number | Promise<Number> = 0;
 
     try {
+        // Instance of the class
+        const paymentService = new PaymentService();
+
         // Check if: the account exists
-        checkAccountExists(paymentsData, accountId);
+        paymentService.CheckAccountExists(paymentsData, accountId);
 
         // Return the total account balance
-        totalBalance = getTotalBalance(paymentsData, accountId, totalBalance);
+        totalBalance = paymentService.GetTotalBalance(
+            paymentsData,
+            accountId,
+            totalBalance
+        );
 
         // Send the status and respective balance response
         res.status(200).json(totalBalance);
@@ -61,13 +71,17 @@ export const paymentEvent = async (req: Request, res: Response) => {
 
     // Payment operation
     try {
+        // Instance of the class
+        const paymentService = new PaymentService();
+
+        // Check the type order
         switch (type) {
             case "deposit":
                 // Push to the database
                 paymentsData.push(event);
 
                 // Return the total account balance
-                totalBalance = getTotalBalance(
+                totalBalance = paymentService.GetTotalBalance(
                     paymentsData,
                     destination,
                     totalBalance
@@ -81,13 +95,13 @@ export const paymentEvent = async (req: Request, res: Response) => {
                 break;
             case "withdraw":
                 // Check if: the account exists
-                checkAccountExists(paymentsData, origin);
+                paymentService.CheckAccountExists(paymentsData, origin);
 
                 // Push to the database
                 paymentsData.push(event);
 
                 // Return the total account balance
-                totalBalance = getTotalBalance(
+                totalBalance = paymentService.GetTotalBalance(
                     paymentsData,
                     origin,
                     totalBalance
@@ -104,20 +118,20 @@ export const paymentEvent = async (req: Request, res: Response) => {
                 let totalBalanceDestination: Number | Promise<Number> = 0;
 
                 // Check if: the account origin and destination exists
-                checkAccountExists(paymentsData, origin);
+                paymentService.CheckAccountExists(paymentsData, origin);
 
                 // Push to the database
                 paymentsData.push(event);
 
                 // Return the total origin account balance
-                totalBalanceOrigin = getTotalBalance(
+                totalBalanceOrigin = paymentService.GetTotalBalance(
                     paymentsData,
                     origin,
                     totalBalance
                 );
 
                 // Return the total destination account balance
-                totalBalanceDestination = getTotalBalance(
+                totalBalanceDestination = paymentService.GetTotalBalance(
                     paymentsData,
                     destination,
                     totalBalance

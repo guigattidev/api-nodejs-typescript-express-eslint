@@ -9,8 +9,9 @@ import {
 
 const userRouter: Router = Router();
 
+// The endpoints for the application
 userRouter.post("/reset", paymentReset);
-userRouter.get("/balance", parametersExists, paymentBalance);
 userRouter.post("/event", paymentEvent);
+userRouter.get("/balance", parametersExists, paymentBalance);
 
 export default userRouter;

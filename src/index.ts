@@ -1,31 +1,17 @@
-import express, { Request } from "express";
+import express, { Application } from "express";
 import cors from "cors";
 import * as dotenv from "dotenv";
 
-// Import lib
-import Logger from "./helpers/logger.js";
-
 // Import routes
-import userRouter from "./routes/userRouter.js";
+// import userRouter from "./routes/userRouter.js";
 import paymentRouter from "./routes/paymentRouter.js";
 
 // Dot env config init
 dotenv.config();
 
 // Config express and port vars
-const app = express();
-const PORT = process.env.APP_PORT || 8080;
-
-// Get logger endpoint configs
-app.get("/logger", (_, res) => {
-    Logger.error("This is an error log");
-    Logger.warn("This is a warn log");
-    Logger.info("This is a info log");
-    Logger.http("This is a http log");
-    Logger.debug("This is a debug log");
-
-    res.send("Hello world");
-});
+const app: Application = express();
+const PORT: string | number = process.env.APP_PORT || 8080;
 
 // Middleware cors and json body parser
 app.use(cors());
@@ -39,3 +25,5 @@ app.use("", paymentRouter);
 app.listen(PORT, () => {
     console.log(`API is listening on port ${PORT}`);
 });
+
+export default app;
