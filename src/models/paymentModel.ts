@@ -1,1 +1,3 @@
-export const paymentsData: any[] = [];
+import { IData } from "../helpers/paymentInterface.js";
+
+export let paymentsData: IData[] = [];

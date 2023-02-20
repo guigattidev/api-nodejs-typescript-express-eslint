@@ -1,5 +1,13 @@
 export interface IEvent {
     type: string;
-    destination: string;
+    origin?: string;
+    destination?: string;
+    amount: number;
+}
+
+export interface IData {
+    type: string;
+    origin?: string;
+    destination?: string;
     amount: number;
 }
