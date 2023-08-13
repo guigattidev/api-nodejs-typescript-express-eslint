@@ -1,10 +1,18 @@
 import { Request, Response } from "express";
 
 import { schema } from "../helpers/schemaValidation.js";
-import { IEvent } from "../helpers/paymentInterface.js";
+import { IData } from "../helpers/paymentInterface.js";
 import PaymentService from "../services/paymentService.js";
-import { paymentsData } from "../models/paymentModel.js";
 
+/**
+ * @openapi
+ * /reset:
+ *   post:
+ *     description: Reset state before starting tests
+ *     responses:
+ *       200:
+ *         description: OK
+ */
 export const paymentReset = async (req: Request, res: Response) => {
     try {
         // Instance of the class
@@ -20,6 +28,15 @@ export const paymentReset = async (req: Request, res: Response) => {
     }
 };
 
+/**
+ * @openapi
+ * /balance:
+ *   get:
+ *     description: Get the balance account
+ *     responses:
+ *       200:
+ *         description: 20
+ */
 export const paymentBalance = async (req: Request, res: Response) => {
     const { account_id: accountId } = req.query;
 
@@ -31,14 +48,10 @@ export const paymentBalance = async (req: Request, res: Response) => {
         const paymentService = new PaymentService();
 
         // Check if: the account exists
-        paymentService.CheckAccountExists(paymentsData, accountId);
+        paymentService.CheckAccountExists(accountId);
 
         // Return the total account balance
-        totalBalance = paymentService.GetTotalBalance(
-            paymentsData,
-            accountId,
-            totalBalance
-        );
+        totalBalance = paymentService.GetTotalBalance(accountId, totalBalance);
 
         // Send the status and respective balance response
         res.status(200).json(totalBalance);
@@ -47,6 +60,15 @@ export const paymentBalance = async (req: Request, res: Response) => {
     }
 };
 
+/**
+ * @openapi
+ * /event:
+ *   post:
+ *     description: Create, deposit, withdraw and transfer balance account
+ *     responses:
+ *       200:
+ *         description: OK
+ */
 export const paymentEvent = async (req: Request, res: Response) => {
     const { type, origin, destination, amount } = req.body;
 
@@ -54,7 +76,7 @@ export const paymentEvent = async (req: Request, res: Response) => {
     let totalBalance: Number | Promise<Number> = 0;
 
     // Create payment event
-    const event: IEvent = {
+    const event: IData = {
         type,
         amount,
         ...(destination && { destination }),
@@ -78,11 +100,10 @@ export const paymentEvent = async (req: Request, res: Response) => {
         switch (type) {
             case "deposit":
                 // Push to the database
-                paymentsData.push(event);
+                paymentService.AddEventDataBase(event);
 
                 // Return the total account balance
                 totalBalance = paymentService.GetTotalBalance(
-                    paymentsData,
                     destination,
                     totalBalance
                 );
@@ -95,14 +116,13 @@ export const paymentEvent = async (req: Request, res: Response) => {
                 break;
             case "withdraw":
                 // Check if: the account exists
-                paymentService.CheckAccountExists(paymentsData, origin);
+                paymentService.CheckAccountExists(origin);
 
                 // Push to the database
-                paymentsData.push(event);
+                paymentService.AddEventDataBase(event);
 
                 // Return the total account balance
                 totalBalance = paymentService.GetTotalBalance(
-                    paymentsData,
                     origin,
                     totalBalance
                 );
@@ -118,21 +138,19 @@ export const paymentEvent = async (req: Request, res: Response) => {
                 let totalBalanceDestination: Number | Promise<Number> = 0;
 
                 // Check if: the account origin and destination exists
-                paymentService.CheckAccountExists(paymentsData, origin);
+                paymentService.CheckAccountExists(origin);
 
                 // Push to the database
-                paymentsData.push(event);
+                paymentService.AddEventDataBase(event);
 
                 // Return the total origin account balance
                 totalBalanceOrigin = paymentService.GetTotalBalance(
-                    paymentsData,
                     origin,
                     totalBalance
                 );
 
                 // Return the total destination account balance
                 totalBalanceDestination = paymentService.GetTotalBalance(
-                    paymentsData,
                     destination,
                     totalBalance
                 );

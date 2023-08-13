@@ -1,4 +1,4 @@
-<h2 align="center">
+<!--<h2 align="center">
   EBANX Software Engineer Take-home assignment
 </h2>
 
@@ -21,7 +21,11 @@
 7. Use version control, we would love to see your step-by-step process.
 8. Take your time, don’t rush it.
 
-## :test_tube: Test endpoints
+## :test_tube: Test endpoints-->
+
+# Fintech API
+
+![App](https://i.imgur.com/04QOt0x.png)
 
 ### /reset
 
@@ -100,9 +104,3 @@ GET /balance?account_id=100
 
 200 20
 ```
-
-<!--
-Criando API básica com Node.JS | Typescript | Express | Eslint
-https://www.youtube.com/watch?v=uDLSIXn3_u8
-Rodrigues Costa
--->

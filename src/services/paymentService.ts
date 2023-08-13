@@ -3,15 +3,18 @@ import { paymentsData } from "../models/paymentModel.js";
 import { IData } from "../helpers/paymentInterface.js";
 
 export default class PaymentService {
-    CleanDataBase() {
+    CleanDataBase(): void {
         paymentsData.length = 0;
     }
 
-    GetTotalBalance = (
-        paymentsData: IData[],
+    AddEventDataBase(event: IData): void {
+        paymentsData.push(event);
+    }
+
+    GetTotalBalance(
         accountId: string | any,
         totalBalance: number | any
-    ): Number => {
+    ): number {
         // Percurse all the array elements and add or retrive the amount of value
         paymentsData.forEach((element) => {
             if (
@@ -31,12 +34,9 @@ export default class PaymentService {
 
         // Return the total balance
         return totalBalance;
-    };
+    }
 
-    CheckAccountExists = (
-        paymentsData: IData[],
-        accountId: string | any
-    ): void => {
+    CheckAccountExists(accountId: string | any): void {
         // Check if: account exists
         const accountExists = paymentsData.some(
             (element) => element.destination === accountId
@@ -46,5 +46,5 @@ export default class PaymentService {
         if (!accountExists) {
             throw new Error("Account does not exist");
         }
-    };
+    }
 }
